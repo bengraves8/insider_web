@@ -1,54 +1,44 @@
 export type MediaType =
-  | 'image/gif'
-  | 'image/jpeg'
-  | 'image/jpg'
-  | 'image/png'
-  | 'video/mp4'
-  | 'video/quicktime'
-  | 'application/pdf'
-  | 'text/vcard';
+  | 'video'
+  | 'image'
+  | 'folder'
+  | 'pdf'
+  | 'gif';
 
 export interface ImageDimensions {
   width: number;
   height: number;
 }
 
-export interface MediaUrls {
-  thumbnail: string;
-  original: string;
-}
-
 export interface Media {
   id: string;
-  orgId: string;
-  userId?: string;
-  contactId?: string;
-  name: string;
-  url: MediaUrls;
   type: MediaType;
+  title: string;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
   size: number;
-  createdAt: number;
-  updatedAt?: number;
-  archived: boolean;
-  deleted: boolean;
+  duration?: string;
+  views?: number;
+  collaborators?: Array<{
+    name: string;
+    avatar: string;
+  }>;
+  tags?: string[];
   dimensions?: ImageDimensions;
 }
 
 export interface MediaUploadParams {
   name: string;
   file: File;
-  userId?: string;
-  contactId?: string;
   type: MediaType;
 }
 
 export interface MediaUpdateParams {
-  userId?: string;
-  contactId?: string;
   name?: string;
-  url?: MediaUrls;
+  title?: string;
+  thumbnail?: string;
   type?: MediaType;
   size?: number;
-  archived?: boolean;
-  deleted?: boolean;
+  tags?: string[];
 }

@@ -43,10 +43,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { MediaType } from '@/types/media';
 
 interface MediaItem {
   id: string;
-  type: 'folder' | 'video' | 'image' | 'pdf' | 'gif';
+  type: MediaType;
   title: string;
   thumbnail?: string;
   views?: number;
@@ -72,28 +73,28 @@ const MOCK_DATA: MediaItem[] = [
   // Folders
   {
     id: 'folder-1',
-    type: 'folder',
+    type: 'folder' as MediaType,
     title: 'Marketing Videos',
     createdAt: '2024-03-15',
     updatedAt: '2024-03-20',
   },
   {
     id: 'folder-2',
-    type: 'folder',
+    type: 'folder' as MediaType,
     title: 'Product Demos',
     createdAt: '2024-03-10',
     updatedAt: '2024-03-18',
   },
   {
     id: 'folder-3',
-    type: 'folder',
+    type: 'folder' as MediaType,
     title: 'Event Recordings',
     createdAt: '2024-03-05',
     updatedAt: '2024-03-15',
   },
   {
     id: 'folder-4',
-    type: 'folder',
+    type: 'folder' as MediaType,
     title: 'Training Materials',
     createdAt: '2024-03-01',
     updatedAt: '2024-03-12',
@@ -101,7 +102,7 @@ const MOCK_DATA: MediaItem[] = [
   // Generate video items
   ...(Array.from({ length: 8 }, (_, i) => ({
     id: `video-${i + 1}`,
-    type: 'video',
+    type: 'video' as MediaType,
     title: `Project Video ${i + 1}`,
     thumbnail: `https://picsum.photos/seed/video${i + 1}/360/640`,
     createdAt: '2024-03-20',
@@ -131,7 +132,7 @@ const MOCK_DATA: MediaItem[] = [
   // Generate image items
   ...(Array.from({ length: 6 }, (_, i) => ({
     id: `image-${i + 1}`,
-    type: 'image',
+    type: 'image' as MediaType,
     title: `Project Image ${i + 1}`,
     thumbnail: `https://picsum.photos/seed/image${i + 1}/400/400`,
     createdAt: '2024-03-20',
@@ -149,7 +150,7 @@ const MOCK_DATA: MediaItem[] = [
   // Generate PDF items
   ...(Array.from({ length: 4 }, (_, i) => ({
     id: `pdf-${i + 1}`,
-    type: 'pdf',
+    type: 'pdf' as MediaType,
     title: `Document ${i + 1}.pdf`,
     createdAt: '2024-03-20',
     updatedAt: '2024-03-20',
@@ -326,8 +327,8 @@ export default function MediaPage() {
                             {video.duration && <span>•</span>}
                             <span>{video.size}</span>
                           </div>
-                          {video.tags?.length > 0 && (
-                            <div className="flex items-center gap-2 mb-3">
+                          {video.tags && video.tags.length > 0 && (
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
                               {video.tags.map((tag) => (
                                 <Badge key={tag} variant="secondary">
                                   {tag}
@@ -392,7 +393,7 @@ export default function MediaPage() {
                             </div>
                             <div className="flex items-center gap-2">
                               <TagIcon className="w-4 h-4" />
-                              <span>{video.tags?.length ? video.tags.join(', ') : ''}</span>
+                              <span>{video.tags && video.tags.length > 0 ? video.tags.join(', ') : ''}</span>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -457,7 +458,7 @@ export default function MediaPage() {
               className="w-full h-full"
             />
           </div>
-          {selectedVideo && (
+          {selectedVideo && selectedVideo.tags && selectedVideo.tags.length > 0 && (
             <div className="p-4 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -487,7 +488,7 @@ export default function MediaPage() {
                   ))}
                 </div>
               </div>
-              {selectedVideo.tags?.length > 0 && (
+              {selectedVideo.tags && selectedVideo.tags.length > 0 && (
                 <div className="flex items-center gap-2">
                   {selectedVideo.tags.map((tag) => (
                     <Badge key={tag} variant="secondary">
