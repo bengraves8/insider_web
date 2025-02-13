@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isUserInOrg(orgId) {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid));
+    }
+
+    // Transactions rules
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated() && 
+        isUserInOrg(resource.data.orgId);
+      
+      allow create: if isAuthenticated() && 
+        isUserInOrg(request.resource.data.orgId) &&
+        request.resource.data.amount >= 0 &&
+        request.resource.data.probability >= 0 &&
+        request.resource.data.probability <= 100 &&
+        request.resource.data.status in ['pending', 'completed', 'failed', 'refunded'] &&
+        request.resource.data.type in ['donation', 'purchase', 'subscription', 'other'] &&
+        request.resource.data.platform in ['stripe', 'manual', 'other'];
+      
+      allow update: if isAuthenticated() && 
+        isUserInOrg(resource.data.orgId) &&
+        resource.data.orgId == request.resource.data.orgId;
+      
+      allow delete: if isAuthenticated() && 
+        isUserInOrg(resource.data.orgId);
+    }
+
+    // Organizations rules
+    match /organizations/{orgId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        (resource == null || resource.data.ownerId == request.auth.uid);
+      
+      match /members/{userId} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated() && 
+          get(/databases/$(database)/documents/organizations/$(orgId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}
