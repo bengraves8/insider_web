@@ -1,5 +1,4 @@
 import ContactProfileClient from './client';
-import ContactProfileClient from './client';
 
 // Mock data for demonstration
 const MOCK_CONTACTS = Array.from({ length: 10 }, (_, i) => ({
@@ -79,11 +78,7 @@ const MOCK_CONTACTS = Array.from({ length: 10 }, (_, i) => ({
     totalTransactions: 5,
     totalDonations: 42500,
     averageResponseTime: '2 hours',
-    lastActivity: '2 days ago',
-    responseRate: {
-      current: 85,
-      trend: 5
-    }
+    lastActivity: '2 days ago'
   }
 }));
 
